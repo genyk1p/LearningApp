@@ -110,12 +110,14 @@ class Window:
         menu_bar.add_command(label='Studying the material', command=self.studying_the_material)
         self.root.configure(menu=menu_bar)
 
+    # Drawing the home screen
     def enter_screen(self):
         self.st_main_screen_articles_for_learning.insert("1.0", self.introducing_text_en)
         self.st_main_screen_articles_for_learning.insert(END, self.introducing_text_ru)
         self.st_main_screen_articles_for_learning.place(x=125, y=30)
         self.st_main_screen_articles_for_learning.configure(state=DISABLED)
 
+    # Adding a new article
     def adding_articles(self):
         # Replace all previous widgets
         self.disable_widgets_articles_for_learning()
@@ -131,6 +133,7 @@ class Window:
         self.l_description_adding_articles.place(x=10, y=100)
         self.bt_add_adding_articles.place(x=60, y=220, width=60)
 
+    # Browse articles that you can choose to study
     def articles_for_learning(self):
         # Replace all previous widgets
         self.disable_widgets_adding_articles()
@@ -138,14 +141,7 @@ class Window:
 
         self.draw_first_articles_for_learning()
 
-    def draw_first_articles_for_learning(self, comb_field_of_knowledge=0):
-        article.load_from_db()
-        self.comb_field_of_knowledge.current(comb_field_of_knowledge)
-        self.st_articles_for_learning.configure(state=NORMAL)
-        self.st_articles_for_learning.delete(1.0, END)
-        art_list = article.get_first(self.field_of_knowledge_list[comb_field_of_knowledge])
-        self.draw_widget_art_learn(art_list=art_list)
-
+    # Studying the material
     def studying_the_material(self):
         # Replace all previous widgets
         self.disable_widgets_articles_for_learning()
@@ -158,6 +154,16 @@ class Window:
             self.current_article_article_for_learning = art_list
         self.draw_widget_studying_the_material(art_list, show_answer=False)
 
+
+    def draw_first_articles_for_learning(self, comb_field_of_knowledge=0):
+        article.load_from_db()
+        self.comb_field_of_knowledge.current(comb_field_of_knowledge)
+        self.st_articles_for_learning.configure(state=NORMAL)
+        self.st_articles_for_learning.delete(1.0, END)
+        art_list = article.get_first(self.field_of_knowledge_list[comb_field_of_knowledge])
+        self.draw_widget_art_learn(art_list=art_list)
+
+    # This function takes an article and draws widgets in the study section.
     def draw_widget_studying_the_material(self, art_list, show_answer=False):
         if art_list == []:
             self.disable_widgets_studying_material()
@@ -187,6 +193,7 @@ class Window:
             self.bt_don_not_know_studying_material.place(x=510, y=560)
             self.bt_show_answer_studying_material.place(x=595, y=560)
 
+    # This function takes an article and draws widgets in the article selection section to explore.
     def draw_widget_art_learn(self, art_list):
         self.l_lesson_progress_articles_for_learning.place(x=10, y=20)
         self.ent_lesson_progress_articles_for_learning.configure(textvariable=StringVar(value=get_art_user_text(art_list[0])))
@@ -216,6 +223,7 @@ class Window:
 
         self.st_articles_for_learning.configure(state=DISABLED)
 
+    # Displays the previous article in the select article to study section if the user clicks on the button prev
     def action_bt_prev_articles_for_learning(self):
         art_list = article.get_prev(
             field_of_knowledge=self.field_of_knowledge_list[self.comb_field_of_knowledge.current()])
@@ -226,6 +234,7 @@ class Window:
             field_of_knowledge=self.field_of_knowledge_list[self.comb_field_of_knowledge.current()])
         self.draw_widget_art_learn(art_list)
 
+    # Adds an article to study
     def action_bt_add_articles_for_learning(self):
         art_list = article.get_current()
         if user.get_from_db(int(art_list[0])) is None:
@@ -237,15 +246,18 @@ class Window:
             user.add_to_db(data)
         self.draw_widget_art_learn(art_list=art_list)
 
+    # Removes an article from the list of articles to study.
     def action_bt_remove_articles_for_learning(self):
         if user.delete_from_db(('article_id', article.get_current()[0]))[0] is True:
             user.load_from_db()
             art_list = article.get_current()
             self.draw_widget_art_learn(art_list=art_list)
 
+    # Opens a new window for editing the article
     def action_bt_edit_articles_for_learning(self):
         self.create_child(article, 1100, 600, 'EditArticle')
 
+    # After the article has been edited, updates the article class instance and re-renders the updated article
     def action_bt_refresh_articles_for_learning(self):
         index = article.counter
         article.load_from_db()
@@ -258,6 +270,7 @@ class Window:
                 self.comb_field_of_knowledge.current(index)
         self.draw_widget_art_learn(art_list=art_list)
 
+    # Deletes an article and displays the closest article in its place.
     def action_bt_delete_articles_for_learning(self):
         field_of_knowledge = self.field_of_knowledge_list[self.comb_field_of_knowledge.current()]
         index = article.counter
@@ -349,6 +362,7 @@ class Window:
         art_list = self.current_article_article_for_learning
         self.draw_widget_studying_the_material(art_list, show_answer=True)
 
+    # Removes widgets from a section adding_articles
     def disable_widgets_adding_articles(self):
         self.st_main_screen_articles_for_learning.place_forget()
         self.st_adding_articles.place_forget()
@@ -361,6 +375,7 @@ class Window:
         self.l_success_adding_articles.place_forget()
         self.comb_field_of_knowledge_add_art.place_forget()
 
+    # Removes widgets from a section articles_for_learning
     def disable_widgets_articles_for_learning(self):
         self.st_main_screen_articles_for_learning.place_forget()
         self.l_field_of_knowledge_studying_material.place_forget()
@@ -379,6 +394,7 @@ class Window:
         self.st_question_articles_for_learning.place_forget()
         self.l_description_articles_for_learning.place_forget()
 
+    # Removes widgets from a section studying_material
     def disable_widgets_studying_material(self):
         self.l_description_studying_material.place_forget()
         self.l_question_studying_material.place_forget()
