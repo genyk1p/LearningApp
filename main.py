@@ -78,7 +78,7 @@ class Window:
         self.l_description_articles_for_learning = Label(self.root, text='Description:', justify=LEFT)
 
         # Initialization studying the material widget
-        self.l_description_studying_material = Label(self.root, text='Description:', justify=LEFT)
+        self.l_description_studying_material = Label(self.root, text='Answer:', justify=LEFT)
         self.l_question_studying_material = Label(self.root, text='Question:', justify=LEFT)
         self.l_field_of_knowledge_studying_material = Label(self.root, text='Field of Knowledge', justify=LEFT)
         self.bt_i_know_studying_material = Button(self.root, text='Know', width=10,
